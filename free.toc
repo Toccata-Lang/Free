@@ -34,9 +34,10 @@
   (wrap [_ v] (pure v))
   (apply* [f args]
     (free-app f args))
-  (flat-map [_ f]
-    (free-monad (map v (fn [y]
-                         (flat-map y f))))))
+  ;; (flat-map [_ f]
+  ;;   (free-monad (map v (fn [y]
+  ;;                        (flat-map y f)))))
+  )
 
 (deftype app-fn [v]
   Stringable
@@ -83,10 +84,11 @@
   (wrap [_ v] (pure v))
   (apply* [f args]
     (free-app f args))
-  (flat-map [fv f]
-    (free-app (app-fn (fn [fx & xs]
-                        (f (apply fx xs))))
-              (cons v args))))
+  ;; (flat-map [fv f]
+  ;;   (free-app (app-fn (fn [fx & xs]
+  ;;                       (f (apply fx xs))))
+  ;;             (cons v args)))
+  )
 
 (deftype pure [v]
   Stringable
@@ -108,8 +110,9 @@
   (wrap [_ v] (pure v))
   (apply* [f args]
     (free-app f args))
-  (flat-map [_ f]
-    (f v)))
+  ;; (flat-map [_ f]
+  ;;   (f v))
+  )
 
 (defn lift [x]
   (free-monad (map x wrap-free)))

@@ -38,20 +38,20 @@
 (main [_]
       (let [double (fn [x]
                      (* 2 x))]
-        ;; check the functor and applicative laws for free
-        (println :free)
-        (println :functor-1 (= (fr/evaluate (map (fr/pure 5) identity) id)
+        ;; check the functor and applicative laws for pure
+        (println 'pure)
+        (println 'functor-1 (= (fr/evaluate (map (fr/pure 5) identity) id)
                                (fr/evaluate (fr/pure 5) id)))
-        (println :functor-2 (= (fr/evaluate (map (map (fr/pure 2) inc) double) id)
-                               (fr/evaluate (map (fr/pure 2) (comp inc double)) id)))
-        (println :apply-1 (= (fr/evaluate (map (fr/pure 5) inc) id)
+        (println 'functor-2 (= (fr/evaluate (map (map (fr/pure 2) inc) double) id)
+                               (fr/evaluate (map (fr/pure 2) (comp double inc)) id)))
+        (println 'apply-1 (= (fr/evaluate (map (fr/pure 5) inc) id)
                              (fr/evaluate (apply-to inc (fr/pure 5)) id)))
-        (println :apply-2 (= (fr/evaluate (fr/pure 5) id)
+        (println 'apply-2 (= (fr/evaluate (fr/pure 5) id)
                              (fr/evaluate (apply-to identity (fr/pure 5)) id)))
         (let [v1 (fr/pure "first ")
               v2 (fr/pure "second ")
               v3 (fr/pure "third")]
-          (println :apply-3 (= (fr/evaluate (apply-to comp (apply-to comp v1 v2) v3) id)
+          (println 'apply-3 (= (fr/evaluate (apply-to comp (apply-to comp v1 v2) v3) id)
                                (fr/evaluate (apply-to comp v1 (apply-to comp v2 v3)) id)
                                (fr/evaluate (map (apply-to comp v1 v2 v3)
                                                  identity)
@@ -59,11 +59,11 @@
 
         (let [f-inc (fn [x] (fr/pure (inc x)))
               f-dbl (fn [x] (fr/pure (double x)))]
-          (println :flat-map-1 (= (fr/evaluate (flat-map (fr/pure 4) f-inc) id)
+          (println 'flat-map-1 (= (fr/evaluate (flat-map (fr/pure 4) f-inc) id)
                                   (fr/evaluate (f-inc 4) id)))
-          (println :flat-map-2 (= (fr/evaluate (flat-map (fr/pure 4) fr/pure) id)
+          (println 'flat-map-2 (= (fr/evaluate (flat-map (fr/pure 4) fr/pure) id)
                                   (fr/evaluate (fr/pure 4) id)))
-          (println :flat-map-3 (= (fr/evaluate (flat-map (flat-map (fr/pure 4) f-inc) f-dbl) id)
+          (println 'flat-map-3 (= (fr/evaluate (flat-map (flat-map (fr/pure 4) f-inc) f-dbl) id)
                                   (fr/evaluate (flat-map (fr/pure 4) (fn [x] (flat-map (f-inc x) f-dbl))) id)))))
 
       (let [double (fn [x]
@@ -72,29 +72,29 @@
                    (fr/lift (Id v)))]
         ;; check the functor and applicative laws for free-monad
         (println)
-        (println :free-monad)
-        (println :functor-1 (= (fr/evaluate (map (id-m 5) identity) id)
+        (println 'free-monad)
+        (println 'functor-1 (= (fr/evaluate (map (id-m 5) identity) id)
                                (fr/evaluate (id-m 5) id)))
-        (println :functor-2 (= (fr/evaluate (map (map (id-m 2) inc) double) id)
-                               (fr/evaluate (map (id-m 2) (comp inc double)) id)))
-        (println :apply-1 (= (fr/evaluate (map (id-m 5) inc) id)
+        (println 'functor-2 (= (fr/evaluate (map (map (id-m 2) inc) double) id)
+                               (fr/evaluate (map (id-m 2) (comp double inc)) id)))
+        (println 'apply-1 (= (fr/evaluate (map (id-m 5) inc) id)
                              (fr/evaluate (apply-to inc (id-m 5)) id)))
-        (println :apply-2 (= (fr/evaluate (id-m 5) id)
+        (println 'apply-2 (= (fr/evaluate (id-m 5) id)
                              (fr/evaluate (apply-to identity (id-m 5)) id)))
         (let [v1 (id-m "first ")
               v2 (id-m "second ")
               v3 (id-m "third")]
-          (println :apply-3 (= (fr/evaluate (apply-to comp (apply* (id-m comp) (list v1 v2)) v3) id)
+          (println 'apply-3 (= (fr/evaluate (apply-to comp (apply* (id-m comp) (list v1 v2)) v3) id)
                                (fr/evaluate (apply-to comp v1 (apply* (id-m comp) (list v2 v3))) id)
                                (fr/evaluate (apply* (id-m comp) (list v1 v2 v3)) id))))
 
         (let [f-inc (fn [x] (id-m (inc x)))
               f-dbl (fn [x] (id-m (double x)))]
-          (println :flat-map-1 (= (fr/evaluate (flat-map (id-m 4) f-inc) id)
+          (println 'flat-map-1 (= (fr/evaluate (flat-map (id-m 4) f-inc) id)
                                   (fr/evaluate (f-inc 4) id)))
-          (println :flat-map-2 (= (fr/evaluate (flat-map (id-m 4) id-m) id)
+          (println 'flat-map-2 (= (fr/evaluate (flat-map (id-m 4) id-m) id)
                                   (fr/evaluate (id-m 4) id)))
-          (println :flat-map-3 (= (fr/evaluate (flat-map (flat-map (id-m 4) f-inc) f-dbl) id)
+          (println 'flat-map-3 (= (fr/evaluate (flat-map (flat-map (id-m 4) f-inc) f-dbl) id)
                                   (fr/evaluate (flat-map (id-m 4) (fn [x] (flat-map (f-inc x) f-dbl))) id)))
           )
         )
@@ -105,29 +105,29 @@
                    (apply-to identity (fr/pure v)))]
         ;; check the functor and applicative laws for free-app
         (println)
-        (println :free-app)
-        (println :functor-1 (= (fr/evaluate (map (id-m 5) identity) id)
+        (println 'free-app)
+        (println 'functor-1 (= (fr/evaluate (map (id-m 5) identity) id)
                                (fr/evaluate (id-m 5) id)))
-        (println :functor-2 (= (fr/evaluate (map (map (id-m 2) inc) double) id)
-                               (fr/evaluate (map (id-m 2) (comp inc double)) id)))
-        (println :apply-1 (= (fr/evaluate (map (id-m 5) inc) id)
+        (println 'functor-2 (= (fr/evaluate (map (map (id-m 2) inc) double) id)
+                               (fr/evaluate (map (id-m 2) (comp double inc)) id)))
+        (println 'apply-1 (= (fr/evaluate (map (id-m 5) inc) id)
                              (fr/evaluate (apply-to inc (id-m 5)) id)))
-        (println :apply-2 (= (fr/evaluate (id-m 5) id)
+        (println 'apply-2 (= (fr/evaluate (id-m 5) id)
                              (fr/evaluate (apply-to identity (id-m 5)) id)))
 
         (let [v1 (id-m "first ")
               v2 (id-m "second ")
               v3 (id-m "third")]
-          (println :apply-3 (= (fr/evaluate (apply-to comp (apply* (id-m comp) (list v1 v2)) v3) id)
+          (println 'apply-3 (= (fr/evaluate (apply-to comp (apply* (id-m comp) (list v1 v2)) v3) id)
                                (fr/evaluate (apply-to comp v1 (apply* (id-m comp) (list v2 v3))) id)
                                (fr/evaluate (apply* (id-m comp) (list v1 v2 v3)) id))))
 
         (let [f-inc (fn f-inc [x] (id-m (inc x)))
               f-dbl (fn f-dbl [x] (id-m (double x)))]
-          (println :flat-map-1 (= (fr/evaluate (flat-map (id-m 4) f-inc) id)
+          (println 'flat-map-1 (= (fr/evaluate (flat-map (id-m 4) f-inc) id)
                                   (fr/evaluate (f-inc 4) id)))
-          (println :flat-map-2 (= (fr/evaluate (flat-map (id-m 4) id-m) id)
+          (println 'flat-map-2 (= (fr/evaluate (flat-map (id-m 4) id-m) id)
                                   (fr/evaluate (id-m 4) id)))
-          (println :flat-map-3 (= (fr/evaluate (flat-map (flat-map (id-m 4) f-inc) f-dbl) id)
+          (println 'flat-map-3 (= (fr/evaluate (flat-map (flat-map (id-m 4) f-inc) f-dbl) id)
                                   (fr/evaluate (flat-map (id-m 4) (fn [x] (flat-map (f-inc x) f-dbl))) id))))))
 
