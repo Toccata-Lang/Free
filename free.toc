@@ -32,7 +32,7 @@
   (map [fv f]
     (free-app (pure f) (list fv)))
   (wrap [_ v] (pure v))
-  (apply* [f args]
+  (apply [f args]
     (free-app f args))
   ;; (flat-map [_ f]
   ;;   (free-monad (map v (fn [y]
@@ -50,7 +50,7 @@
 
 (defprotocol FreeApply
   (free-apply [f vs]
-    (apply* f vs)))
+    (apply f vs)))
 
 (extend-type Function
   FreeApply
@@ -82,7 +82,7 @@
                          (f (apply g args)))))
               args))
   (wrap [_ v] (pure v))
-  (apply* [f args]
+  (apply [f args]
     (free-app f args))
   ;; (flat-map [fv f]
   ;;   (free-app (app-fn (fn [fx & xs]
@@ -108,7 +108,7 @@
   (map [fv f]
     (free-app (pure f) (list fv)))
   (wrap [_ v] (pure v))
-  (apply* [f args]
+  (apply [f args]
     (free-app f args))
   ;; (flat-map [_ f]
   ;;   (f v))
