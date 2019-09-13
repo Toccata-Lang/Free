@@ -31,7 +31,7 @@
   Container
   (map [fv f]
     (free-app (pure f) (list fv)))
-  (wrap [_ v] (pure v))
+  (wrap [_ x] (pure x))
   (apply [f args]
     (free-app f args))
   ;; (flat-map [_ f]
@@ -81,9 +81,9 @@
                        (fn [& args]
                          (f (apply g args)))))
               args))
-  (wrap [_ v] (pure v))
-  (apply [f args]
-    (free-app f args))
+  (wrap [_ x] (pure x))
+  (apply [f apply-args]
+    (free-app f apply-args))
   ;; (flat-map [fv f]
   ;;   (free-app (app-fn (fn [fx & xs]
   ;;                       (f (apply fx xs))))
@@ -107,9 +107,9 @@
   Container
   (map [fv f]
     (free-app (pure f) (list fv)))
-  (wrap [_ v] (pure v))
-  (apply [f args]
-    (free-app f args))
+  (wrap [_ x] (pure x))
+  (apply [f apply-args]
+    (free-app f apply-args))
   ;; (flat-map [_ f]
   ;;   (f v))
   )
