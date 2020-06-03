@@ -52,7 +52,7 @@
   (free-apply [f vs]
     (apply f vs)))
 
-(extend-type Function
+(extend-type Fn
   FreeApply
   (free-apply [f vs]
     (apply f vs)))
