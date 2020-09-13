@@ -1,15 +1,11 @@
 
-(def pure)
-(def free-app)
+(deftype pure [v])
 
-(defprotocol FreeWrapper
+(defprotocol FreeProtocol
   (wrap-free [x]
-    (pure x)))
+    (pure x))
 
-(defprotocol FreeEvaluate
-  (evaluate [x eval-f]
-    (print-err 'free/evaluate 'fail x)
-    (abort)))
+  (evaluate [x eval-f]))
 
 (deftype free-monad [v]
   ;; (assert (implements? map v))
@@ -20,44 +16,24 @@
           (string-list v)
           (list ">")))
 
-  FreeWrapper
+  FreeProtocol
   (wrap-free [x] x)
 
-  FreeEvaluate
   (evaluate [_ f]
     (f (map v (fn [y]
-                (evaluate y f)))))
+                (evaluate y f))))))
 
-  Container
-  (map [fv f]
-    (free-app (pure f) (list fv)))
-  (wrap [_ x] (pure x))
-  (apply [f args]
-    (free-app f args))
-  ;; (flat-map [_ f]
-  ;;   (free-monad (map v (fn [y]
-  ;;                        (flat-map y f)))))
-  )
+;; (deftype app-fn [v]
+;;   Stringable
+;;   (string-list [_] (list "<AppFn>"))
 
-(deftype app-fn [v]
-  Stringable
-  (string-list [_] (list "<AppFn>"))
-
-  FreeEvaluate
-  (evaluate [_ f]
-    (fn [& args]
-      (evaluate (apply v args) f))))
-
-(defprotocol FreeApply
-  (free-apply [f vs]
-    (apply f vs)))
-
-(extend-type Fn
-  FreeApply
-  (free-apply [f vs]
-    (apply f vs)))
+;;   FreeProtocol
+;;   (evaluate [_ f]
+;;     (fn [& args]
+;;       (evaluate (apply v args) f))))
 
 (deftype free-app [v args]
+  (assert (instance? List args))
   ;; (assert (implements? evaluate v))
 
   Stringable
@@ -66,14 +42,13 @@
           (interpose (flat-map args string-list) " ")
           (list ">")))
 
-  FreeWrapper
+  FreeProtocol
   (wrap-free [x] x)
 
-  FreeEvaluate
   (evaluate [_ f]
-    (free-apply (evaluate v f)
-                (map args (fn [v]
-                            (evaluate v f)))))
+    (apply (evaluate v f)
+           (map args (fn [v]
+                       (evaluate v f)))))
 
   Container
   (map [_ f]
@@ -90,19 +65,30 @@
   ;;             (cons v args)))
   )
 
-(deftype pure [v]
+(extend-type free-monad
+  Container
+  (map [fv f]
+    (free-app (pure f) (list fv)))
+  (wrap [_ x] (pure x))
+  (apply [f args]
+    (free-app f args))
+  ;; (flat-map [_ f]
+  ;;   (free-monad (map v (fn [y]
+  ;;                        (flat-map y f)))))
+  )
+
+(extend-type pure
   Stringable
-  (string-list [_]
+  (string-list [p]
     (comp (list "<pure: ")
-          (string-list v)
+          (string-list (.v p))
           (list ">")))
 
-  FreeWrapper
+  FreeProtocol
   (wrap-free [x] x)
 
-  FreeEvaluate
-  (evaluate [_ eval-f]
-    (eval-f v))
+  (evaluate [p eval-f]
+    (eval-f (.v p)))
 
   Container
   (map [fv f]
