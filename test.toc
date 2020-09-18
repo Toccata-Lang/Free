@@ -9,7 +9,7 @@
           (list ">")))
 
   Container
-  (apply* [_ vs]
+  (apply [_ vs]
     (apply v (map vs .v))))
 
 (defprotocol IdProto
@@ -19,13 +19,7 @@
 (deftype Id [v]
   Stringable
   (string-list [_]
-    (list "<Id: "
-          (str v)
-          ">"))
-
-  Eq
-  (=* [_ y]
-    (=* v (.v y)))
+    (list (str "<Id: " v ">")))
 
   Container
   (map [_ f]
@@ -84,9 +78,9 @@
         (let [v1 (id-m "first ")
               v2 (id-m "second ")
               v3 (id-m "third")]
-          (println 'apply-3 (= (fr/evaluate (apply-to comp (apply* (id-m comp) (list v1 v2)) v3) id)
-                               (fr/evaluate (apply-to comp v1 (apply* (id-m comp) (list v2 v3))) id)
-                               (fr/evaluate (apply* (id-m comp) (list v1 v2 v3)) id))))
+          (println 'apply-3 (= (fr/evaluate (apply-to comp (apply (id-m comp) (list v1 v2)) v3) id)
+                               (fr/evaluate (apply-to comp v1 (apply (id-m comp) (list v2 v3))) id)
+                               (fr/evaluate (apply (id-m comp) (list v1 v2 v3)) id))))
 
         (let [f-inc (fn [x] (id-m (inc x)))
               f-dbl (fn [x] (id-m (double x)))]
@@ -118,9 +112,9 @@
         (let [v1 (id-m "first ")
               v2 (id-m "second ")
               v3 (id-m "third")]
-          (println 'apply-3 (= (fr/evaluate (apply-to comp (apply* (id-m comp) (list v1 v2)) v3) id)
-                               (fr/evaluate (apply-to comp v1 (apply* (id-m comp) (list v2 v3))) id)
-                               (fr/evaluate (apply* (id-m comp) (list v1 v2 v3)) id))))
+          (println 'apply-3 (= (fr/evaluate (apply-to comp (apply (id-m comp) (list v1 v2)) v3) id)
+                               (fr/evaluate (apply-to comp v1 (apply (id-m comp) (list v2 v3))) id)
+                               (fr/evaluate (apply (id-m comp) (list v1 v2 v3)) id))))
 
         (let [f-inc (fn f-inc [x] (id-m (inc x)))
               f-dbl (fn f-dbl [x] (id-m (double x)))]

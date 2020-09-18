@@ -19,9 +19,9 @@
   FreeProtocol
   (wrap-free [x] x)
 
-  (evaluate [_ f]
-    (f (map v (fn [y]
-                (evaluate y f))))))
+  (evaluate [_ eval]
+    (eval (map v (fn [y]
+                   (evaluate y eval))))))
 
 ;; (deftype app-fn [v]
 ;;   Stringable
@@ -38,9 +38,10 @@
 
   Stringable
   (string-list [_]
-    (comp (list "<free-app: ")
+    (comp (list "(free-app ")
+          (str v) " "
           (interpose (flat-map args string-list) " ")
-          (list ">")))
+          (list ")")))
 
   FreeProtocol
   (wrap-free [x] x)
